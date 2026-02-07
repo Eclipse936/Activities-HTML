@@ -1,0 +1,659 @@
+html<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Online Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "🏦";
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            padding: 60px;
+            text-align: center;
+        }
+
+        .login-screen h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-content {
+            padding: 40px;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .balance-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .account-number {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Transaction Section */
+        .transaction-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .transaction-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .transaction-form h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .transaction-form.credit {
+            border-left: 5px solid #28a745;
+        }
+
+        .transaction-form.debit {
+            border-left: 5px solid #dc3545;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-credit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-credit:hover {
+            background: #218838;
+        }
+
+        .btn-debit {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-debit:hover {
+            background: #c82333;
+        }
+
+        /* Transaction History */
+        .transaction-history {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .transaction-history h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-type {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .transaction-type.credit {
+            color: #28a745;
+        }
+
+        .transaction-type.debit {
+            color: #dc3545;
+        }
+
+        .transaction-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .transaction-amount.credit {
+            color: #28a745;
+        }
+
+        .transaction-amount.debit {
+            color: #dc3545;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .no-transactions {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .transaction-section {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .balance-amount {
+                font-size: 36px;
+            }
+
+            .login-screen {
+                padding: 30px;
+            }
+
+            .dashboard-content {
+                padding: 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .transaction-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Scrollbar Styling */
+        .transaction-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .transaction-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .transaction-list::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .transaction-list::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <h2>Welcome to SecureBank</h2>
+            <p style="color: #666; margin-bottom: 30px;">Please login to access your account</p>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <p style="margin-top: 20px; color: #666; font-size: 14px;">
+                    Demo: username: <strong>demo</strong> | password: <strong>demo123</strong>
+                </p>
+            </form>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="header">
+                <div class="logo">SecureBank</div>
+                <div class="user-info">
+                    <span id="welcomeUser">Welcome, User</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- Balance Card -->
+                <div class="balance-card">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="balanceAmount">$10,000.00</div>
+                    <div class="account-number">Account: XXXX-XXXX-XXXX-1234</div>
+                </div>
+
+                <!-- Transaction Forms -->
+                <div class="transaction-section">
+                    <!-- Credit Form -->
+                    <div class="transaction-form credit">
+                        <h3>💰 Credit (Deposit)</h3>
+                        <form id="creditForm">
+                            <div class="input-group">
+                                <label>Amount</label>
+                                <input type="number" id="creditAmount" placeholder="Enter amount" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Source</label>
+                                <select id="creditSource" required>
+                                    <option value="">Select source</option>
+                                    <option value="Salary">Salary</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Interest">Interest</option>
+                                    <option value="Refund">Refund</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Description</label>
+                                <textarea id="creditDesc" rows="3" placeholder="Enter description (optional)"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-credit">Add Credit</button>
+                        </form>
+                    </div>
+
+                    <!-- Debit Form -->
+                    <div class="transaction-form debit">
+                        <h3>💳 Debit (Withdrawal)</h3>
+                        <form id="debitForm">
+                            <div class="input-group">
+                                <label>Amount</label>
+                                <input type="number" id="debitAmount" placeholder="Enter amount" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Category</label>
+                                <select id="debitCategory" required>
+                                    <option value="">Select category</option>
+                                    <option value="Food & Dining">Food & Dining</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Bills & Utilities">Bills & Utilities</option>
+                                    <option value="Transport">Transport</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Description</label>
+                                <textarea id="debitDesc" rows="3" placeholder="Enter description (optional)"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-debit">Add Debit</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Transaction History -->
+                <div class="transaction-history">
+                    <h3>📊 Transaction History</h3>
+                    <div class="transaction-list" id="transactionList">
+                        <div class="no-transactions">No transactions yet. Start by adding a credit or debit transaction above.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Bank Account State
+        let balance = 10000.00;
+        let transactions = [];
+        let currentUser = null;
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const balanceAmount = document.getElementById('balanceAmount');
+        const transactionList = document.getElementById('transactionList');
+        const welcomeUser = document.getElementById('welcomeUser');
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simple authentication (in real app, this would be server-side)
+            if (username === 'demo' && password === 'demo123') {
+                currentUser = username;
+                welcomeUser.textContent = `Welcome, ${username}`;
+                loginScreen.style.display = 'none';
+                dashboard.classList.add('active');
+                loadTransactions();
+            } else {
+                alert('Invalid credentials! Use demo/demo123');
+            }
+        });
+
+        // Credit Form
+        document.getElementById('creditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('creditAmount').value);
+            const source = document.getElementById('creditSource').value;
+            const description = document.getElementById('creditDesc').value;
+
+            addTransaction('credit', amount, source, description);
+            this.reset();
+        });
+
+        // Debit Form
+        document.getElementById('debitForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('debitAmount').value);
+            const category = document.getElementById('debitCategory').value;
+            const description = document.getElementById('debitDesc').value;
+
+            if (amount > balance) {
+                alert('Insufficient balance!');
+                return;
+            }
+
+            addTransaction('debit', amount, category, description);
+            this.reset();
+        });
+
+        // Add Transaction
+        function addTransaction(type, amount, category, description) {
+            const transaction = {
+                id: Date.now(),
+                type: type,
+                amount: amount,
+                category: category,
+                description: description || 'No description',
+                date: new Date().toLocaleString()
+            };
+
+            transactions.unshift(transaction);
+
+            if (type === 'credit') {
+                balance += amount;
+            } else {
+                balance -= amount;
+            }
+
+            updateBalance();
+            renderTransactions();
+            saveToLocalStorage();
+        }
+
+        // Update Balance Display
+        function updateBalance() {
+            balanceAmount.textContent = `$${balance.toFixed(2)}`;
+        }
+
+        // Render Transactions
+        function renderTransactions() {
+            if (transactions.length === 0) {
+                transactionList.innerHTML = '<div class="no-transactions">No transactions yet. Start by adding a credit or debit transaction above.</div>';
+                return;
+            }
+
+            transactionList.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <div class="transaction-type ${t.type}">
+                            ${t.type === 'credit' ? '↓' : '↑'} ${t.type.toUpperCase()} - ${t.category}
+                        </div>
+                        <div class="transaction-desc">${t.description}</div>
+                        <div class="transaction-date">${t.date}</div>
+                    </div>
+                    <div class="transaction-amount ${t.type}">
+                        ${t.type === 'credit' ? '+' : '-'}$${t.amount.toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Save to LocalStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('bankBalance', balance);
+            localStorage.setItem('bankTransactions', JSON.stringify(transactions));
+        }
+
+        // Load from LocalStorage
+        function loadTransactions() {
+            const savedBalance = localStorage.getItem('bankBalance');
+            const savedTransactions = localStorage.getItem('bankTransactions');
+
+            if (savedBalance) {
+                balance = parseFloat(savedBalance);
+            }
+
+            if (savedTransactions) {
+                transactions = JSON.parse(savedTransactions);
+            }
+
+            updateBalance();
+            renderTransactions();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                loginScreen.style.display = 'block';
+                dashboard.classList.remove('active');
+                currentUser = null;
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Initialize
+        updateBalance();
+    </script>
+</body>
+</html>
